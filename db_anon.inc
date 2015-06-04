@@ -125,4 +125,25 @@ class db_anon {
 
 	}
 
+	public static function get_passive_user_code_for_user ($active_user_code){
+
+		$rand = mt_rand(1,3);
+		$passive_user_code = "passive_user_code" . $rand;
+
+		$query = "select " . $passive_user_code . " from users where active_user_code = ?";
+		$values = Array($active_user_code);
+
+		return db::select_single_value($query, $values);
+
+	}
+
+	public static function get_active_user_code_from_passive ($passive_user_code){
+
+		$query = "select active_user_code from users where passive_user_code1 = ? or passive_user_code2 = ? or passive_user_code3 = ?";
+		$values = Array($passive_user_code, $passive_user_code, $passive_user_code);
+
+		return db::select_single_value($query, $values);
+
+	}
+
 }
