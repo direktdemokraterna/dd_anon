@@ -10,9 +10,7 @@ if(isset($_GET['user_id']) && isset($_GET['temp_code'])){
 
 	if(!empty($user_codes)){
 		$output = Array("active_user_code" => $user_codes['active_user_code'], "passive_user_code1" => $user_codes['passive_user_code1'], "passive_user_code2" => $user_codes['passive_user_code2'], "passive_user_code3" => $user_codes['passive_user_code3']);
-//		$user_codes_encoded = json_encode($user_codes);
 		$output_encoded = json_encode($output);
-//		echo json_encode($user_codes['active_user_code']);
 		echo "JSONP(" . $output_encoded . ")";
 	}
 	else{
@@ -20,3 +18,5 @@ if(isset($_GET['user_id']) && isset($_GET['temp_code'])){
 	}
 
 }
+
+?>
