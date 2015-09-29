@@ -32,3 +32,5 @@ if(isset($_POST['user_id']) && isset($_POST['prop_id']) && isset($_POST['ballot'
 	}
 
 }
+
+?>
