@@ -1,6 +1,7 @@
 <?php
 
 // Includes files
+include("config.inc");
 include("helpers.inc");
 include("db.inc");
 include("db_anon.inc");

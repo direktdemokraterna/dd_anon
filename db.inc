@@ -4,7 +4,8 @@ class db {
 	
 	public static function connect (){
 
-		$conn = new PDO('mysql:host=localhost;dbname=dd_anon', '', '');
+		$data_source = "mysql:host=" . DB_ANON_HOST . ";dbname=" . DB_ANON_NAME;
+		$conn = new PDO($data_source, DB_ANON_USERNAME, DB_ANON_PASSWORD);
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
