@@ -1,17 +1,16 @@
 <?php
 
 function GenerateRandomString ($length){
-
 	$Allowed_Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
 	$random_string = "";
 	for($i=0; $i<$length; $i++)
 	{
-    	$random_string .= $Allowed_Chars[mt_rand(0,62)];
+		$offset = mt_rand(0,62);
+		if ($offset >= strlen($Allowed_Chars))
+			throw new Exception('Tried to generate string from invalid char at offset: ' . $offset);
+    	$random_string .= $Allowed_Chars[$offset];
 	}
-
 	return $random_string;
-
 }
 
 function curl_to_main_server ($main_server_script, $post_vars = null){

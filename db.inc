@@ -1,7 +1,9 @@
 <?
 
 class db {
-	private static function connect (){
+	private static $db = null;
+
+	private static function create_connection (){
 		$data_source = "mysql:host=" . DB_ANON_HOST . ";dbname=" . DB_ANON_NAME;
 		$conn = new PDO($data_source, DB_ANON_USERNAME, DB_ANON_PASSWORD);
 		$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -9,9 +11,14 @@ class db {
 		return $conn;
 	}
 
+	private static function connect (){
+		if (self::$db == null) 
+			self::$db = self::create_connection();  
+	}
+
 	private static function create_statement ($query){
-		$db = self::connect();
-		$stmt = $db->prepare($query);
+		self::connect();
+		$stmt = self::$db->prepare($query);
 		return $stmt;
 	}
 
@@ -38,6 +45,7 @@ class db {
 	public static function select_single_value ($query, $values){
 		$stmt = self::execute($query, $values);
 		$result = $stmt->fetchAll();
+		if (count($result) == 0) return null;
 		$row = $result[0];
 		return $row[0];
 	}
@@ -45,7 +53,7 @@ class db {
 	// executes an insert query, returns insert_id
 	public static function insert ($query, $values){
 		$stmt = self::execute($query, $values);
-		return $db->lastInsertId();
+		return self::$db->lastInsertId();
 	}
 
 	// executes an update query, returns number of affected rows
@@ -113,8 +121,7 @@ class db {
 	}
 
 	public static function insert_all ($query, $insert_array){
-		$db = self::connect();
-		$stmt = $db->prepare($query);
+		$stmt = self::create_statement();
 		$counter = 0;
 		foreach($insert_array as $row){
 			$values = Array($row[0]);

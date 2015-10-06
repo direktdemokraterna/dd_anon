@@ -1,26 +1,37 @@
 <?
 class db_anon {
-	public static function insert_new_user ($user_id, $active_user_code, $passive_user_code1, $passive_user_code2, $passive_user_code3){
-		$query = "insert into users (user_id, active_user_code, passive_user_code1, passive_user_code2, passive_user_code3) values (?, ?, ?, ?)";
+	private static function generate_new_user_codes ($user_id){
+		$active_user_code = GenerateRandomString(20);
+		$passive_user_code1 = GenerateRandomString(20);
+		$passive_user_code2 = GenerateRandomString(20);
+		$passive_user_code3 = GenerateRandomString(20);
+		$query = "insert into users (user_id, active_user_code, passive_user_code1, passive_user_code2, passive_user_code3) values (?, ?, ?, ?, ?)";
 		$values = Array($user_id, $active_user_code, $passive_user_code1, $passive_user_code2, $passive_user_code3);
 		return db::insert($query, $values);
 	}
 
-	public static function insert_temp_code_and_constituencies ($temp_code, $user_id, $constituencies_array){
-		$query = "insert into user_temp_codes (temp_code, user_id, timestamp_created) values (?, ?, ?)";
-		$values = Array($temp_code, $user_id, time());
-		$ok = db::insert($query, $values);
-		if($ok){
-			$query = "insert into temp_codes_constituencies (timestamp_created, constituency_id, temp_code) values (" . time() . ", ?, ?)";
-			return db::insert_multiple_rows_with_two_variables($query, $constituencies_array, $temp_code);
-		}
-		return false;
+	private static function get_primary_key_of_user ($user_id){
+		$query = "select id from users where user_id = ?";
+		$values = Array($user_id);
+		return db::select_single_value($query, $values);
 	}
 
-	public static function insert_user_id_and_temp_code ($user_id, $temp_code){
+	private static function generate_user_codes_for_new_user ($user_id){
+		$id = self::get_primary_key_of_user($user_id);
+		return $id > 0 
+			? $id 
+			: self::generate_new_user_codes($user_id); 
+	}
+
+	public static function update_user_temp_code ($user_id, $temp_code){
+		$id = self::generate_user_codes_for_new_user($user_id);
+		if (!($id > 0)) 
+			throw new Exception("Failed to generate user_codes for new user: " . $user_id);
 		$query = "insert into user_temp_codes (temp_code, user_id, timestamp_created) values (?, ?, ?)";
 		$values = Array($temp_code, $user_id, time());
-		return db::insert($query, $values);
+		$id = db::insert($query, $values);
+		if (!($id > 0)) 
+			throw new Exception("Failed to generate temp_code for user: " . $user_id);
 	}
 
 	public static function check_temp_code_and_user_id ($temp_code, $user_id){
