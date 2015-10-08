@@ -9,3 +9,4 @@ if(isset($_POST['user_id']) && isset($_POST['temp_code'])){
 		echo "fail: " . $e;		
 	}
 }
+?>

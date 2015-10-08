@@ -1,4 +1,4 @@
-<?
+<?php
 
 class db {
 	private static $db = null;
@@ -131,3 +131,4 @@ class db {
 		return $counter;
 	}
 }
+?>

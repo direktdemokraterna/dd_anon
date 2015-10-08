@@ -1,4 +1,4 @@
-<?
+<?php
 class db_anon {
 	private static function generate_new_user_codes ($user_id){
 		$active_user_code = GenerateRandomString(20);
@@ -102,3 +102,4 @@ class db_anon {
 		return db::select_single_value($query, $values);
 	}
 }
+?>
