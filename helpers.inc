@@ -5,7 +5,7 @@ function GenerateRandomString ($length){
 	$random_string = "";
 	for($i=0; $i<$length; $i++)
 	{
-		$offset = mt_rand(0,62);
+		$offset = mt_rand(0,61);
 		if ($offset >= strlen($Allowed_Chars))
 			throw new Exception('Tried to generate string from invalid char at offset: ' . $offset);
     	$random_string .= $Allowed_Chars[$offset];
