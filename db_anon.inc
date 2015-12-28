@@ -1,28 +1,6 @@
 <?php
-class db_anon {
-	private static function generate_new_user_codes ($user_id){
-		$active_user_code = GenerateRandomString(20);
-		$passive_user_code1 = GenerateRandomString(20);
-		$passive_user_code2 = GenerateRandomString(20);
-		$passive_user_code3 = GenerateRandomString(20);
-		$query = "insert into users (user_id, active_user_code, passive_user_code1, passive_user_code2, passive_user_code3) values (?, ?, ?, ?, ?)";
-		$values = Array($user_id, $active_user_code, $passive_user_code1, $passive_user_code2, $passive_user_code3);
-		return db::insert($query, $values);
-	}
-
-	private static function get_primary_key_of_user ($user_id){
-		$query = "select id from users where user_id = ?";
-		$values = Array($user_id);
-		return db::select_single_value($query, $values);
-	}
-
-	private static function generate_user_codes_for_new_user ($user_id){
-		$id = self::get_primary_key_of_user($user_id);
-		return $id > 0 
-			? $id 
-			: self::generate_new_user_codes($user_id); 
-	}
-
+class db_anon 
+{
 	public static function update_user_temp_code ($user_id, $temp_code){
 		$id = self::generate_user_codes_for_new_user($user_id);
 		if (!($id > 0)) 
@@ -100,6 +78,29 @@ class db_anon {
 		$query = "select active_user_code from users where passive_user_code1 = ? or passive_user_code2 = ? or passive_user_code3 = ?";
 		$values = Array($passive_user_code, $passive_user_code, $passive_user_code);
 		return db::select_single_value($query, $values);
+	}
+
+	private static function generate_user_codes_for_new_user ($user_id){
+		$id = self::get_primary_key_of_user($user_id);
+		return $id
+			? $id 
+			: self::generate_new_user_codes($user_id); 
+	}
+
+	private static function get_primary_key_of_user ($user_id){
+		$query = "select id from users where user_id = ?";
+		$values = Array($user_id);
+		return db::select_single_value($query, $values);
+	}
+
+	private static function generate_new_user_codes ($user_id){
+		$active_user_code = GenerateRandomString(20);
+		$passive_user_code1 = GenerateRandomString(20);
+		$passive_user_code2 = GenerateRandomString(20);
+		$passive_user_code3 = GenerateRandomString(20);
+		$query = "insert into users (user_id, active_user_code, passive_user_code1, passive_user_code2, passive_user_code3) values (?, ?, ?, ?, ?)";
+		$values = Array($user_id, $active_user_code, $passive_user_code1, $passive_user_code2, $passive_user_code3);
+		return db::insert($query, $values);
 	}
 }
 ?>
