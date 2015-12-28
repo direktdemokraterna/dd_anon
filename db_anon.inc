@@ -33,9 +33,16 @@ class db_anon
 	}
 
 	public static function get_user_codes ($user_id, $temp_code){
-		$query = "select active_user_code, passive_user_code1, passive_user_code2, passive_user_code3 from users u, user_temp_codes utc
-					where u.user_id = utc.user_id and u.user_id = ? and utc.temp_code = ?";
+		$query = "select active_user_code, passive_user_code1, passive_user_code2, passive_user_code3 from users u join user_temp_codes utc on u.user_id = utc.user_id
+					where u.user_id = ? and utc.temp_code = ?";
 		$values = Array($user_id, $temp_code);
+		return db::select_single_row($query, $values);
+	}
+
+	public static function get_all_user_codes ($user_id){
+		$query = "select active_user_code, passive_user_code1, passive_user_code2, passive_user_code3 from users
+					where user_id = ?";
+		$values = Array($user_id);
 		return db::select_single_row($query, $values);
 	}
 
