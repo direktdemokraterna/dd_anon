@@ -9,7 +9,7 @@ function get_signed_data() {
 }
 
 function verify($signature, $plaintext) {
-	include('Crypt/RSA.php');
+	include_once('Crypt/RSA.php');
 	$computed_hash = hash('sha256', $plaintext);
 	$rsa = new Crypt_RSA();
 	$rsa->loadKey(DD_RSA_PUBLIC_KEY);
@@ -56,7 +56,7 @@ function decrypt_ballot ($ballot)
 	// Ballot consist of RSA and AES part
 	$ballot_decoded = json_decode($ballot, true);
 	// decryption using phplibsec RSA library
-	include('Crypt/RSA.php');
+	include_once('Crypt/RSA.php');
 	$rsa = new Crypt_RSA();
 	$rsa->loadKey($private_key);
 	$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
