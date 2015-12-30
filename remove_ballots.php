@@ -1,10 +1,9 @@
 <?php
 
 require("init.inc");
-
-//TODO: Add signature for web-server so anon-server can verify the sender of the request
-if(isset($_POST['user_id'])){
-	$user_codes = db_anon::get_all_user_codes($_POST['user_id']);
+$data = get_signed_data();
+if(isset($data['user_id'])){
+	$user_codes = db_anon::get_all_user_codes($data['user_id']);
 	$reply = curl_to_main_server("remove_ballots.php", $user_codes);
 	echo $reply == "success" 
 		? "success" 

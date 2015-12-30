@@ -1,9 +1,9 @@
 <?php
 
 require("init.inc");
-
-if(isset($_POST['user_codes'])){
-	$user_codes_array = unserialize($_POST['user_codes']);
+$data = get_signed_data();
+if(isset($data['user_codes'])){
+	$user_codes_array = unserialize($data['user_codes']);
 	$return_array = Array();
 	foreach($user_codes_array as $row){
 		$passive_user_code = $row['user_code'];
