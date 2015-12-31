@@ -57,7 +57,7 @@ function sign($post_vars) {
 	$serial_data = serialize($post_vars);
 	$hash = hash('sha256', $serial_data);
 	$rsa = new Crypt_RSA();
-	$rsa->loadKey(DD_PRIVATE_KEY);
+	$rsa->loadKey(DD_ANON_PRIVATE_KEY);
 	$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
 	$signature = $rsa->encrypt($hash);
 	$post_vars = array('sign' => $signature, 'data' => $serial_data);
