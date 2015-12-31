@@ -16,7 +16,7 @@ function verify($signature, $plaintext) {
 	$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
 	$hash = $rsa->decrypt($signature);
 	if ($hash != $computed_hash)
-		throw new \Exception('Invalid message: ' . $serial_data 
+		throw new \Exception('Invalid message: ' . $plaintext 
 			. '. Hash missmatch, provided: ' . $hash 
 			. ', computed: ' . $computed_hash);
 }
@@ -40,14 +40,28 @@ function curl_to_main_server ($main_server_script, $post_vars = null)
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, MAIN_SERVER_URL . $main_server_script);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	if($post_vars){
-		$post_data = http_build_query($post_vars);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-	}
+	$signed_data = sign($post_vars);
+	$post_data = http_build_query($signed_data);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);			
 	$reply = curl_exec($ch);
 	curl_close($ch);
 	return $reply;
+}
+
+function sign($post_vars) {
+	include_once('Crypt/RSA.php');
+	if (!$post_vars)
+		$post_vars = array();
+	$post_vars['salt'] = GenerateRandomString(20);
+	$serial_data = serialize($post_vars);
+	$hash = hash('sha256', $serial_data);
+	$rsa = new Crypt_RSA();
+	$rsa->loadKey(DD_PRIVATE_KEY);
+	$rsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
+	$signature = $rsa->encrypt($hash);
+	$post_vars = array('sign' => $signature, 'data' => $serial_data);
+	return $post_vars;
 }
 
 function decrypt_ballot ($ballot)
