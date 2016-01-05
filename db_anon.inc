@@ -26,40 +26,40 @@ class db_anon
 	}
 
 	public static function check_user_and_constituency ($user_id, $temp_code, $constituency_id){
-		$query = "select u.active_user_code from users u, user_temp_codes utc, temp_codes_constituencies tcc 
+		$query = "select u.active_user_code from user u, user_temp_codes utc, temp_codes_constituencies tcc 
 					where u.user_id = utc.user_id and utc.temp_code = tcc.temp_code and u.user_id = ? and utc.temp_code = ? and tcc.constituency_id = ?";
 		$values = Array($user_id, $temp_code, $constituency_id);
 		return db::select_single_value($query, $values);
 	}
 
 	public static function get_user_codes ($user_id, $temp_code){
-		$query = "select active_user_code, passive_user_code1, passive_user_code2, passive_user_code3 from users u join user_temp_codes utc on u.user_id = utc.user_id
+		$query = "select active_user_code, passive_user_code1, passive_user_code2, passive_user_code3 from user u join user_temp_codes utc on u.user_id = utc.user_id
 					where u.user_id = ? and utc.temp_code = ?";
 		$values = Array($user_id, $temp_code);
 		return db::select_single_row($query, $values);
 	}
 
 	public static function get_all_user_codes ($user_id){
-		$query = "select active_user_code, passive_user_code1, passive_user_code2, passive_user_code3 from users
+		$query = "select active_user_code, passive_user_code1, passive_user_code2, passive_user_code3 from user
 					where user_id = ?";
 		$values = Array($user_id);
 		return db::select_single_row($query, $values);
 	}
 
 	public static function get_active_user_code ($user_id){
-		$query = "select active_user_code from users where user_id = ?";
+		$query = "select active_user_code from user where user_id = ?";
 		$values = Array($user_id);
 		return db::select_single_value($query, $values);
 	}
 
 	public static function update_last_login ($user_id){
-		$query = "update users set timestamp_last_login = ? where user_id = ?";
+		$query = "update user set timestamp_last_login = ? where user_id = ?";
 		$values = Array(time(), $user_id);
 		return db::update($query, $values);
 	}
 
 	public static function update_last_activity ($user_id){
-		$query = "update users set timestamp_last_activity = ? where user_id = ?";
+		$query = "update user set timestamp_last_activity = ? where user_id = ?";
 		$values = Array(time(), $user_id);
 		return db::update($query, $values);
 	}
@@ -76,13 +76,13 @@ class db_anon
 	public static function get_passive_user_code_for_user ($active_user_code){
 		$rand = mt_rand(1,3);
 		$passive_user_code = "passive_user_code" . $rand;
-		$query = "select " . $passive_user_code . " from users where active_user_code = ?";
+		$query = "select " . $passive_user_code . " from user where active_user_code = ?";
 		$values = Array($active_user_code);
 		return db::select_single_value($query, $values);
 	}
 
 	public static function get_active_user_code_from_passive ($passive_user_code){
-		$query = "select active_user_code from users where passive_user_code1 = ? or passive_user_code2 = ? or passive_user_code3 = ?";
+		$query = "select active_user_code from user where passive_user_code1 = ? or passive_user_code2 = ? or passive_user_code3 = ?";
 		$values = Array($passive_user_code, $passive_user_code, $passive_user_code);
 		return db::select_single_value($query, $values);
 	}
@@ -95,7 +95,7 @@ class db_anon
 	}
 
 	private static function get_primary_key_of_user ($user_id){
-		$query = "select id from users where user_id = ?";
+		$query = "select id from user where user_id = ?";
 		$values = Array($user_id);
 		return db::select_single_value($query, $values);
 	}
@@ -105,7 +105,7 @@ class db_anon
 		$passive_user_code1 = GenerateRandomString(20);
 		$passive_user_code2 = GenerateRandomString(20);
 		$passive_user_code3 = GenerateRandomString(20);
-		$query = "insert into users (user_id, active_user_code, passive_user_code1, passive_user_code2, passive_user_code3) values (?, ?, ?, ?, ?)";
+		$query = "insert into user (user_id, active_user_code, passive_user_code1, passive_user_code2, passive_user_code3) values (?, ?, ?, ?, ?)";
 		$values = Array($user_id, $active_user_code, $passive_user_code1, $passive_user_code2, $passive_user_code3);
 		return db::insert($query, $values);
 	}
