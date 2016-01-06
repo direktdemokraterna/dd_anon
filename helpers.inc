@@ -1,5 +1,18 @@
 <?php
 
+function forward_command_for_user_and_constituency_with_user_codes($main_server_script) {
+	$data = get_signed_data();
+	if(isset($data['user_id']) && isset($data['constituency_id'])){
+		$post_vars = db_anon::get_all_user_codes($data['user_id']);
+		$post_vars['constituency_id'] = $data['constituency_id'];
+		$reply = curl_to_main_server($main_server_script, $post_vars);
+		echo $reply == "success" 
+			? "success" 
+			: "failed - reply from $main_server_script: $reply";
+	}
+	else echo "user_id or constituency_id was not posted";	
+}
+
 function get_signed_data() {
 	$serial_data = $_POST['data'];
 	$signature = $_POST['sign'];
