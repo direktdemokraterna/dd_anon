@@ -1,16 +1,13 @@
 <?php
-
-require("init.inc");
-if(isset($_GET['user_id']) && isset($_GET['temp_code'])){
+if(isset($_GET['user_id']) && isset($_GET['temp_code'])
+	&& (!isset($_GET['ignore']) || !$_GET['ignore'])) {
+	require("init.inc");
 	$user_codes = db_anon::get_user_codes($_GET['user_id'], $_GET['temp_code']);
-	if(!empty($user_codes)){
-		$output = Array("active_user_code" => $user_codes['active_user_code'], "passive_user_code1" => $user_codes['passive_user_code1'], "passive_user_code2" => $user_codes['passive_user_code2'], "passive_user_code3" => $user_codes['passive_user_code3']);
-		$output_encoded = json_encode($output);
-		echo $output_encoded;
+	if($user_codes){
+		$user_codes_encoded = json_encode($user_codes);
+		echo "set_user_codes($user_codes_encoded)";
 	}
-	else{
-		echo "";
-	}
+	else
+		echo "failed_to_set_user_codes()";
 }
-
 ?>
