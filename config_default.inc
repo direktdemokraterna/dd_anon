@@ -1,10 +1,10 @@
-<?php 
+<?php
 // Defines database constants
-define("DB_ANON_HOST", "localhost");
-define("DB_ANON_NAME", "dd");
-define("DB_ANON_USERNAME", "");
-define("DB_ANON_PASSWORD", "");
+define_if_undefined("DB_ANON_HOST", "localhost");
+define_if_undefined("DB_ANON_NAME", "dd_anon");
+define_if_undefined("DB_ANON_USERNAME", "root");
+define_if_undefined("DB_ANON_PASSWORD", "");
 
-define("MAIN_SERVER_URL", "http://localhost/dd/helpers/receiver_scripts_from_anon_server/");
+define_if_undefined("MAIN_SERVER_URL", "http://localhost/dd/helpers/receiver_scripts_from_anon_server/");
 
 ?>
