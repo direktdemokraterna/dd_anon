@@ -3,7 +3,6 @@
 // Includes files
 include("helpers/util.inc");
 include("config.inc");
-include("config_default.inc");
 include("helpers.inc");
 include("db.inc");
 include("db_anon.inc");
